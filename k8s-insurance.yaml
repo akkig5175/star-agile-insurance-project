@@ -1,55 +1,35 @@
 apiVersion: apps/v1
 kind: Deployment
 metadata:
-  name: insurance-app
+  name: health-care-deployment
   labels:
-    app: insurance-app
+    app: health-care
 spec:
-  replicas: 1
+  replicas: 2
   selector:
     matchLabels:
-      app: insurance-app
+      app: health-care
   template:
     metadata:
       labels:
-        app: insurance-app
+        app: health-care
     spec:
       containers:
-        - name: insurance-app
-          image: akki5175/insurance-app:latest
+        - name: health-care-container
+          image: akki5175/health_care:latest
           ports:
             - containerPort: 8080
-          resources:
-            requests:
-              memory: "256Mi"
-              cpu: "250m"
-            limits:
-              memory: "512Mi"
-              cpu: "500m"
-          readinessProbe:
-            httpGet:
-              path: /actuator/health
-              port: 8080
-            initialDelaySeconds: 10
-            periodSeconds: 5
-          livenessProbe:
-            httpGet:
-              path: /actuator/health
-              port: 8080
-            initialDelaySeconds: 15
-            periodSeconds: 20
 
 ---
-
 apiVersion: v1
 kind: Service
 metadata:
-  name: insurance-service
+  name: health-care-service
 spec:
   selector:
-    app: insurance-app
+    app: health-care
   type: NodePort
   ports:
-    - port: 8080
+    - port: 80
       targetPort: 8080
       nodePort: 30082
